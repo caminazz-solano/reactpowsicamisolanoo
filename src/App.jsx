@@ -5,6 +5,7 @@ import AppointmentPage from './pages/AppointmentPage.jsx'
 import ContactPage from './pages/ContactPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import PetDashboardPage from './pages/PetDashboardPage.jsx'
+import { currentAppPath } from './routes.js'
 
 const pages = {
   '/': HomePage,
@@ -23,7 +24,7 @@ const pageTitles = {
 }
 
 function App() {
-  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  const path = currentAppPath()
   const Page = pages[path] ?? HomePage
 
   useEffect(() => {

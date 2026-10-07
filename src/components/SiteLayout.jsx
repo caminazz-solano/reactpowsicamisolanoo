@@ -2,6 +2,7 @@ import { useState } from 'react'
 import logo from '../assets/powsi.png'
 import footerLogo from '../assets/powsii.png'
 import { whatsappUrl } from '../data/powsi.js'
+import { appPath } from '../routes.js'
 
 const pawPositions = [
   [8, 16],
@@ -22,7 +23,7 @@ export function Icon({ children, className = '' }) {
 
 export function Button({ href, variant = '', className = '', children, ...props }) {
   const classes = ['btn', variant, className].filter(Boolean).join(' ')
-  if (href) return <a className={classes} href={href} {...props}>{children}</a>
+  if (href) return <a className={classes} href={appPath(href)} {...props}>{children}</a>
   return <button className={classes} type="button" {...props}>{children}</button>
 }
 
@@ -74,12 +75,12 @@ function SiteHeader() {
   return (
     <header className="top">
       <nav className="nav" aria-label="Navegación principal">
-        <a className="logo" href="/" aria-label="POWSI, inicio">
+        <a className="logo" href={appPath('/')} aria-label="POWSI, inicio">
           <img src={logo} alt="POWSI" />
         </a>
         <div className={`links${menuOpen ? ' open' : ''}`} id="site-navigation">
           {links.map(([label, href]) => (
-            <a key={label} href={href} onClick={() => setMenuOpen(false)}>{label}</a>
+            <a key={label} href={appPath(href)} onClick={() => setMenuOpen(false)}>{label}</a>
           ))}
         </div>
         <div className="actions">
@@ -129,10 +130,10 @@ function SiteFooter() {
         </div>
         <div>
           <h4>Enlaces</h4>
-          <a href="/#servicios">Servicios</a>
-          <a href="/mi-mascota">Mi mascota</a>
-          <a href="/#promociones">Promociones</a>
-          <a href="/agendar">Agendar cita</a>
+          <a href={appPath('/#servicios')}>Servicios</a>
+          <a href={appPath('/mi-mascota')}>Mi mascota</a>
+          <a href={appPath('/#promociones')}>Promociones</a>
+          <a href={appPath('/agendar')}>Agendar cita</a>
         </div>
       </div>
     </footer>
