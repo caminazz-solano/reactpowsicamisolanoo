@@ -1,0 +1,27 @@
+@media (max-width: 650px) {
+  .nav {
+    gap: 8px;
+  }
+
+  .nav > .logo img {
+    height: 40px;
+  }
+
+  .actions {
+    flex-shrink: 0;
+    gap: 6px;
+  }
+
+  .actions .icon {
+    flex: 0 0 44px;
+    width: 44px;
+    min-height: 44px;
+  }
+
+  .actions .primary {
+    width: auto;
+    min-height: 40px;
+    padding: 7px 8px;
+    font-size: 0.62rem;
+  }
+}
