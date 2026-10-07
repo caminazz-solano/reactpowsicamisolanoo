@@ -2,7 +2,7 @@ import { useState } from 'react'
 import logo from '../assets/powsi.png'
 import footerLogo from '../assets/powsii.png'
 import { whatsappUrl } from '../data/powsi.js'
-import { appPath } from '../routes.js'
+import { appPath, navigate, shouldHandleAppLink } from '../routes.js'
 
 const pawPositions = [
   [8, 16],
@@ -21,9 +21,21 @@ export function Icon({ children, className = '' }) {
   )
 }
 
+export function AppLink({ href, onClick, children, ...props }) {
+  function handleClick(event) {
+    onClick?.(event)
+    if (!shouldHandleAppLink(event, event.currentTarget)) return
+
+    event.preventDefault()
+    navigate(event.currentTarget.href)
+  }
+
+  return <a href={appPath(href)} onClick={handleClick} {...props}>{children}</a>
+}
+
 export function Button({ href, variant = '', className = '', children, ...props }) {
   const classes = ['btn', variant, className].filter(Boolean).join(' ')
-  if (href) return <a className={classes} href={appPath(href)} {...props}>{children}</a>
+  if (href) return <AppLink className={classes} href={href} {...props}>{children}</AppLink>
   return <button className={classes} type="button" {...props}>{children}</button>
 }
 
@@ -75,12 +87,12 @@ function SiteHeader() {
   return (
     <header className="top">
       <nav className="nav" aria-label="Navegación principal">
-        <a className="logo" href={appPath('/')} aria-label="POWSI, inicio">
+        <AppLink className="logo" href="/" aria-label="POWSI, inicio">
           <img src={logo} alt="POWSI" />
-        </a>
+        </AppLink>
         <div className={`links${menuOpen ? ' open' : ''}`} id="site-navigation">
           {links.map(([label, href]) => (
-            <a key={label} href={appPath(href)} onClick={() => setMenuOpen(false)}>{label}</a>
+            <AppLink key={label} href={href} onClick={() => setMenuOpen(false)}>{label}</AppLink>
           ))}
         </div>
         <div className="actions">
@@ -130,10 +142,10 @@ function SiteFooter() {
         </div>
         <div>
           <h4>Enlaces</h4>
-          <a href={appPath('/#servicios')}>Servicios</a>
-          <a href={appPath('/mi-mascota')}>Mi mascota</a>
-          <a href={appPath('/#promociones')}>Promociones</a>
-          <a href={appPath('/agendar')}>Agendar cita</a>
+          <AppLink href="/#servicios">Servicios</AppLink>
+          <AppLink href="/mi-mascota">Mi mascota</AppLink>
+          <AppLink href="/#promociones">Promociones</AppLink>
+          <AppLink href="/agendar">Agendar cita</AppLink>
         </div>
       </div>
     </footer>

@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Button, Icon, Section, SectionHeading } from '../components/SiteLayout.jsx'
 import { promotions, services, whatsappUrl } from '../data/powsi.js'
 
@@ -68,15 +67,6 @@ function PromotionCard({ promotion }) {
 }
 
 export default function HomePage() {
-  useEffect(() => {
-    const targetId = decodeURIComponent(window.location.hash.slice(1))
-    if (!targetId) return
-
-    window.requestAnimationFrame(() => {
-      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' })
-    })
-  }, [])
-
   return (
     <>
       <Hero />

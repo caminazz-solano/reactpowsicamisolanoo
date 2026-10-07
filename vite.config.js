@@ -13,6 +13,6 @@ const githubPagesSpaFallback = {
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/reactpowsicamisolanoo/',
+  base: '/spapowsicamisolano/',
   plugins: [react(), githubPagesSpaFallback],
 })
