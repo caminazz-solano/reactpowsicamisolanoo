@@ -152,11 +152,16 @@ function SiteFooter() {
   )
 }
 
-export default function SiteLayout({ children }) {
+export default function SiteLayout({ children, mainRef, routeAnnouncement }) {
   return (
     <>
       <SiteHeader />
-      <main>{children}</main>
+      <main id="app-main" ref={mainRef}>
+        {children}
+      </main>
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {routeAnnouncement}
+      </p>
       <SiteFooter />
       <Button href={whatsappUrl} className="float" aria-label="WhatsApp flotante">
         <Icon>forum</Icon>

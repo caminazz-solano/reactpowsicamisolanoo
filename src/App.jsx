@@ -1,4 +1,4 @@
-import { Component, useEffect, useLayoutEffect, useSyncExternalStore } from 'react'
+import { Component, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import SiteLayout, { Button } from './components/SiteLayout.jsx'
 import AboutPage from './pages/AboutPage.jsx'
 import AppointmentPage from './pages/AppointmentPage.jsx'
@@ -34,13 +34,20 @@ function App() {
   const location = useSyncExternalStore(subscribeToLocation, getLocationSnapshot, getLocationSnapshot)
   const path = currentAppPath()
   const Page = pages[path] ?? NotFoundPage
+  const mainRef = useRef(null)
+  const previousPathRef = useRef(path)
+  const [routeAnnouncement, setRouteAnnouncement] = useState('')
+  const pageTitle = pageTitles[path] ?? 'POWSI | Página no encontrada'
 
   useEffect(() => {
-    document.title = pageTitles[path] ?? 'POWSI | Página no encontrada'
+    document.title = pageTitle
   }, [path])
 
   useLayoutEffect(() => {
+    const pathChanged = previousPathRef.current !== path
+    previousPathRef.current = path
     const pendingScroll = consumePendingScroll()
+
     if (pendingScroll?.hash) {
       scrollToHash(pendingScroll.hash)
     } else if (pendingScroll && Number.isFinite(pendingScroll.restoreY)) {
@@ -50,10 +57,21 @@ function App() {
     } else if (window.location.hash) {
       scrollToHash(window.location.hash)
     }
+
+    if (pathChanged) {
+      setRouteAnnouncement(pageTitle)
+      if (!window.location.hash) {
+        const heading = mainRef.current?.querySelector('h1, h2.title')
+        if (heading) {
+          heading.setAttribute('tabindex', '-1')
+          heading.focus({ preventScroll: Boolean(pendingScroll && Number.isFinite(pendingScroll.restoreY)) })
+        }
+      }
+    }
   }, [location])
 
   return (
-    <SiteLayout>
+    <SiteLayout mainRef={mainRef} routeAnnouncement={routeAnnouncement}>
       <RouteErrorBoundary key={`${path}${window.location.search}`}>
         <Page key={`${path}${window.location.search}`} />
       </RouteErrorBoundary>

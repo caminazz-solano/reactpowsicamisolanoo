@@ -4,6 +4,8 @@ Sitio web en React + Vite para POWSI, una veterinaria con paginas de inicio, per
 
 La navegación es una SPA: los enlaces internos usan History API y actualizan la vista sin recargar el documento. Los enlaces externos, las descargas, los modificadores del navegador y destinos en otra pestaña conservan el comportamiento nativo.
 
+Al cambiar de vista con navegación interna, el foco se mueve al encabezado principal y una región `aria-live` anuncia el título para tecnologías de asistencia.
+
 Rutas disponibles: `/`, `/mi-mascota`, `/agendar`, `/nosotros` y `/contacto`. Las rutas desconocidas muestran una página 404. Los formularios de agenda y perfil se procesan en React y no envían el documento.
 
 ## Publicacion
