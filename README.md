@@ -10,8 +10,8 @@ Rutas disponibles: `/`, `/mi-mascota`, `/agendar`, `/nosotros` y `/contacto`. La
 
 El proyecto se publica en GitHub Pages mediante GitHub Actions.
 
-- Repositorio: https://github.com/caminazz-solano/spapowsicamisolano
-- Sitio: https://caminazz-solano.github.io/spapowsicamisolano/
+- Repositorio: https://github.com/caminazz-solano/reactpowsicamisolanoo
+- Sitio: https://caminazz-solano.github.io/reactpowsicamisolanoo/
 - Rama de publicacion: `main`
 - Vite genera las rutas y los recursos con el prefijo del repositorio definido en `vite.config.js`.
 - El build genera `404.html` como fallback de GitHub Pages para que las rutas internas funcionen también al abrirlas directamente.
@@ -33,7 +33,7 @@ npm install
 npm run dev
 ```
 
-Vite muestra la URL local, que incluye la base `/spapowsicamisolano/` configurada para GitHub Pages.
+Vite muestra la URL local, que incluye la base `/reactpowsicamisolanoo/` configurada para GitHub Pages.
 
 ## Produccion
 
