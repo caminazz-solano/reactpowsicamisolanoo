@@ -13,9 +13,15 @@
 
 main h1:focus,
 main h2.title:focus {
-  outline: 3px solid var(--y);
-  outline-offset: 6px;
-  border-radius: 4px;
+  outline: none;
+}
+
+main h1:focus-visible,
+main h2.title:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--y);
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.12em;
 }
 
 @media (max-width: 650px) {
