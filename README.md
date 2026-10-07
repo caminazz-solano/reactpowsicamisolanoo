@@ -37,14 +37,14 @@ npm run preview
 
 ## Archivos incluidos en GitHub
 
-- `src/`: componentes, paginas, estilos y datos de la app.
-- `public/`: recursos publicos usados por Vite.
-- `index.html`, `vite.config.js`, `package.json` y `package-lock.json`: configuracion del proyecto.
+- `src/`: componentes, paginas, estilos, datos y logotipos utilizados por la app.
+- `.github/workflows/deploy.yml`: compilacion y publicacion automatica en Pages.
+- `index.html`, `vite.config.js`, `package.json` y `package-lock.json`: entrada y configuracion del proyecto.
 
 ## Archivos excluidos
 
 - `node_modules/`: dependencias instaladas localmente.
 - `dist/`: build generado.
 - `.docs/`: material legacy y referencias locales usadas durante el desarrollo.
-- Assets de plantilla no usados.
+- `src/assets/react.svg`, `src/assets/vite.svg`, `src/assets/hero.png` y `public/favicon.svg`, `public/icons.svg`: recursos de plantilla no usados.
 - `src/App.css` y `src/index.css`: estilos iniciales de Vite que no usa la aplicacion POWSI.
