@@ -8,6 +8,8 @@ Al cambiar de vista con navegación interna, el foco se mueve al encabezado prin
 
 Rutas disponibles: `/`, `/mi-mascota`, `/agendar`, `/nosotros` y `/contacto`. Las rutas desconocidas muestran una página 404. Los formularios de agenda y perfil se procesan en React y no envían el documento.
 
+Los perfiles de mascotas y las citas se guardan en `localStorage` del navegador; no hay un backend ni sincronización entre dispositivos. Después de agendar, se puede continuar la confirmación por WhatsApp.
+
 ## Publicacion
 
 El proyecto se publica en GitHub Pages mediante GitHub Actions.
