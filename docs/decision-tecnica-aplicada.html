@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decisión técnica aplicada | POWSI</title>
+  <style>
+    :root {
+      --wine: #6e1f1b;
+      --wine-dark: #500808;
+      --cream: #f5e8c8;
+      --paper: #fff4d4;
+      --pink: #e94f9a;
+      --mint: #b8dcc8;
+      --yellow: #f4b83f;
+      --ink: #5a201c;
+      --muted: #79564a;
+      --line: #c9ab7f;
+      --green: #237b53;
+      --rose: #a23854;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      color: var(--ink);
+      font-family: "Be Vietnam Pro", "Segoe UI", Arial, sans-serif;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    body {
+      background: var(--wine);
+    }
+
+    .page {
+      position: relative;
+      width: 210mm;
+      height: 297mm;
+      padding: 10mm 11mm 12mm;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 8% 17%, #f4b83f1c 0 1.2mm, transparent 1.4mm),
+        radial-gradient(circle at 93% 83%, #e94f9a18 0 1mm, transparent 1.2mm),
+        var(--cream);
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .page:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    .topline,
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8mm;
+    }
+
+    .topline {
+      min-height: 15mm;
+      padding-bottom: 3mm;
+      border-bottom: 1.2mm solid var(--wine-dark);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+      font-weight: 900;
+      font-size: 11pt;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .brand img {
+      width: 17mm;
+      height: 13mm;
+      object-fit: contain;
+      background: var(--paper);
+      border-radius: 4mm;
+    }
+
+    .doc-tag,
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: .65mm solid var(--wine-dark);
+      border-radius: 99px;
+      padding: 1.5mm 3mm;
+      background: var(--yellow);
+      color: var(--wine-dark);
+      font-weight: 850;
+      font-size: 7.5pt;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .doc-tag {
+      background: var(--mint);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Bricolage Grotesque", "Arial Black", "Segoe UI", sans-serif;
+      letter-spacing: -.025em;
+    }
+
+    h1 {
+      margin-bottom: 3mm;
+      font-size: 29pt;
+      line-height: 1.02;
+    }
+
+    h2 {
+      margin-bottom: 2mm;
+      font-size: 15pt;
+      line-height: 1.1;
+    }
+
+    h3 {
+      margin-bottom: 1.5mm;
+      font-size: 10pt;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    p,
+    li {
+      font-size: 9pt;
+      line-height: 1.38;
+    }
+
+    p {
+      margin-bottom: 2.5mm;
+    }
+
+    .intro {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 51mm;
+      margin: 5mm 0 4mm;
+      padding: 6mm 7mm;
+      border: 1.2mm solid var(--wine-dark);
+      border-radius: 8mm 5mm 9mm 6mm;
+      background: #f1dfb6;
+      box-shadow: 2mm 2mm 0 var(--wine-dark);
+    }
+
+    .intro .pill {
+      width: fit-content;
+      margin-bottom: 3mm;
+      background: var(--wine);
+      color: var(--cream);
+    }
+
+    .intro p {
+      max-width: 175mm;
+      margin-bottom: 3mm;
+      font-size: 10pt;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2mm;
+    }
+
+    .pills .pill:nth-child(2) {
+      background: var(--pink);
+    }
+
+    .pills .pill:nth-child(3) {
+      background: var(--paper);
+      color: var(--wine-dark);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+      margin: 4mm 0 2.5mm;
+    }
+
+    .num {
+      display: inline-grid;
+      flex: 0 0 8mm;
+      width: 8mm;
+      height: 8mm;
+      place-items: center;
+      border: .65mm solid var(--wine-dark);
+      border-radius: 50%;
+      background: var(--pink);
+      font-size: 8pt;
+      font-weight: 900;
+    }
+
+    .grid-3,
+    .grid-2 {
+      display: grid;
+      gap: 3mm;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card {
+      padding: 4mm;
+      border: .8mm solid var(--wine-dark);
+      border-radius: 5mm 3mm 6mm 4mm;
+      background: var(--paper);
+    }
+
+    .card.mint {
+      background: #e0f0e5;
+    }
+
+    .card.pink {
+      background: #f9d5e5;
+    }
+
+    .card.yellow {
+      background: #f8e5b7;
+    }
+
+    .risk {
+      margin-top: 3mm;
+      border-left: 2mm solid var(--rose);
+      background: #f9d5e5;
+    }
+
+    .decision {
+      margin-top: 3mm;
+      background: var(--mint);
+    }
+
+    .model {
+      margin-top: 3mm;
+      background: var(--wine);
+      color: var(--cream);
+    }
+
+    .model h3 {
+      color: var(--yellow);
+    }
+
+    .model p {
+      margin-bottom: 0;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2mm 5mm;
+      margin: 2mm 0 0;
+      padding-left: 5mm;
+    }
+
+    .steps li {
+      padding-left: 1mm;
+    }
+
+    .code {
+      margin: 2mm 0 3mm;
+      padding: 3.5mm 4mm;
+      border: .6mm solid #3e1010;
+      border-radius: 3mm;
+      background: #351311;
+      color: #fff1ce;
+      font: 7.7pt/1.35 Consolas, "Courier New", monospace;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .code .highlight {
+      color: #ffd468;
+      font-weight: 700;
+    }
+
+    .filelist {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5mm 4mm;
+      margin: 2mm 0 0;
+      padding-left: 4.5mm;
+    }
+
+    .filelist li {
+      font-size: 8.3pt;
+    }
+
+    table {
+      width: 100%;
+      margin: 2mm 0 2.5mm;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: .6mm solid var(--wine-dark);
+      border-radius: 3mm;
+      background: var(--paper);
+    }
+
+    th,
+    td {
+      padding: 2.2mm 2.5mm;
+      border-right: .25mm solid #d6bd96;
+      border-bottom: .25mm solid #d6bd96;
+      text-align: left;
+      vertical-align: top;
+      font-size: 7.8pt;
+      line-height: 1.3;
+    }
+
+    th {
+      background: var(--mint);
+      color: var(--wine-dark);
+      font-size: 7.5pt;
+      font-weight: 900;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    th:last-child,
+    td:last-child {
+      border-right: 0;
+    }
+
+    code {
+      padding: .3mm 1mm;
+      border-radius: 1mm;
+      background: #f0dfc0;
+      font: 7.5pt Consolas, "Courier New", monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .status {
+      display: inline-block;
+      border-radius: 99px;
+      padding: 1mm 2mm;
+      background: #d3eadc;
+      color: #14583a;
+      font-size: 7pt;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .status.pending {
+      background: #f9d5e5;
+      color: #831e42;
+    }
+
+    .callout {
+      margin-top: 3mm;
+      padding: 3mm 4mm;
+      border: .7mm dashed var(--wine);
+      border-radius: 3mm;
+      background: var(--yellow);
+      font-size: 8.3pt;
+      line-height: 1.35;
+    }
+
+    .test-label {
+      display: inline-block;
+      margin-bottom: 1.5mm;
+      color: var(--green);
+      font-weight: 900;
+      font-size: 7.4pt;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .quote {
+      margin: 2mm 0 0;
+      padding: 3mm 4mm;
+      border-left: 1.5mm solid var(--pink);
+      background: #f9d5e5;
+      font-size: 8.7pt;
+    }
+
+    .footer {
+      position: absolute;
+      right: 11mm;
+      bottom: 5mm;
+      left: 11mm;
+      padding-top: 2mm;
+      border-top: .55mm solid #a87c55;
+      color: var(--muted);
+      font-size: 7pt;
+    }
+
+    .footer strong {
+      color: var(--wine);
+    }
+
+    .page-marker {
+      display: inline-grid;
+      width: 7mm;
+      height: 7mm;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--wine);
+      color: var(--cream);
+      font-size: 7pt;
+      font-weight: 900;
+    }
+
+    @media screen {
+      .page {
+        margin: 8mm auto;
+        box-shadow: 0 3mm 10mm #26090988;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <article class="page">
+      <header class="topline">
+        <div class="brand">
+          <img src="../src/assets/powsi.png" alt="POWSI">
+          <span>POWSI · Veterinaria</span>
+        </div>
+        <span class="doc-tag">Informe de decisión técnica</span>
+      </header>
+
+      <section class="intro">
+        <span class="pill">Vertical slice · preparación segura para Supabase Cloud</span>
+        <h1>Decisión técnica aplicada</h1>
+        <p>Se preparó una base segura para que POWSI integre el cliente de Supabase sin convertir la configuración local en un secreto publicado ni inicializar el cliente con parámetros incompletos.</p>
+        <div class="pills">
+          <span class="pill">Mejora aplicada y probada localmente</span>
+          <span class="pill">Sin conexión ni cambios en Cloud</span>
+          <span class="pill">11 de noviembre de 2026</span>
+        </div>
+      </section>
+
+      <div class="section-title"><span class="num">01</span><h2>Contexto real de POWSI</h2></div>
+      <p>POWSI es una aplicación React 19 + Vite. Hoy gestiona perfiles de mascotas y la última solicitud de cita en el navegador; el historial y las vacunas del panel son demostrativos. La preparación de Supabase instala CLI y SDK, crea la configuración local y centraliza el cliente, pero la cuenta CLI todavía no está autenticada y no se vinculó un proyecto Cloud.</p>
+      <div class="grid-3">
+        <section class="card mint">
+          <h3>Implementado</h3>
+          <p>Perfiles locales, módulo cliente preparado con variables y compilación Vite.</p>
+        </section>
+        <section class="card yellow">
+          <h3>Simulado</h3>
+          <p>Confirmación de cita en pantalla y datos clínicos estáticos del tablero.</p>
+        </section>
+        <section class="card pink">
+          <h3>Pendiente</h3>
+          <p>Login, proyecto Cloud, base de datos, RLS y aislamiento por dueño/veterinario.</p>
+        </section>
+      </div>
+      <p style="margin-top:2mm">El modelo de referencia separa <strong>cuenta del dueño</strong>, <strong>perfil de mascota</strong>, veterinario asignado opcional y <strong>notas por perfil</strong>; es una propuesta, aún no implementada ni protegida por RLS.</p>
+
+      <div class="section-title"><span class="num">02</span><h2>Riesgo inicial y decisión</h2></div>
+      <section class="card risk">
+        <h3>Riesgo que se corrige en esta vertical slice</h3>
+        <p>Una variable local con nombre <code>VITE_*</code> puede terminar en el bundle público. Además, si falta la URL o la clave, una inicialización sin guardia podría fallar de manera poco clara o dejar el cliente mal configurado. Una clave privada, como <code>service_role</code>, nunca debe exponerse en React.</p>
+      </section>
+      <section class="card decision">
+        <h3>Decisión aplicada</h3>
+        <p>Se permite en el navegador únicamente la <strong>publishable key</strong>; los archivos de entorno reales se excluyen de Git, se ofrece una plantilla sin secretos y el módulo central falla explícitamente si falta alguna variable requerida. Esto protege configuración, no sustituye autenticación, permisos ni RLS.</p>
+      </section>
+      <section class="card model">
+        <h3>Alcance de seguridad</h3>
+        <p>La regla de autorización para el futuro deberá comprobar en servidor que la cuenta es dueña del perfil o veterinaria asignada, y qué operación puede ejecutar sobre cada nota. No se declaran políticas RLS aplicadas: todavía no hay esquema remoto.</p>
+      </section>
+
+      <footer class="footer">
+        <span>POWSI · Seguridad de configuración, no autorización de datos</span>
+        <span><strong>Informe técnico</strong> · 11 nov 2026</span>
+        <span class="page-marker">1</span>
+      </footer>
+    </article>
+
+    <article class="page">
+      <header class="topline">
+        <div class="brand">
+          <img src="../src/assets/powsi.png" alt="POWSI">
+          <span>Implementación y evidencia</span>
+        </div>
+        <span class="doc-tag">Cambios locales · sin secretos</span>
+      </header>
+
+      <div class="section-title"><span class="num">03</span><h2>Qué se implementó</h2></div>
+      <p>El cambio es acotado a la configuración; no altera los formularios ni incorpora operaciones de negocio.</p>
+      <div class="grid-2">
+        <section class="card mint">
+          <h3>Guardia del cliente</h3>
+          <div class="code">const url = import.meta.env.VITE_SUPABASE_URL
+const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+
+if (!url || !key) {
+  throw new Error(
+    'Missing Supabase configuration...'
+  )
+}
+
+export const supabase = createClient(url, key)</div>
+          <p>La condición se comprueba antes de construir el cliente; el error indica qué configuración falta y dónde definirla.</p>
+        </section>
+        <section class="card yellow">
+          <h3>Protección y plantilla</h3>
+          <div class="code">.env
+.env.*
+!.env.example</div>
+          <p><code>.env.example</code> contiene nombres y valores ilustrativos, no claves reales. Los secretos del servidor no deben llevar prefijo <code>VITE_</code>.</p>
+        </section>
+      </div>
+
+      <div class="section-title"><span class="num">04</span><h2>Pruebas ejecutadas</h2></div>
+      <table>
+        <thead>
+          <tr><th style="width:22%">Caso</th><th style="width:27%">Esperado</th><th style="width:37%">Observado</th><th style="width:14%">Resultado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>URL y clave ausentes; carga del módulo en SSR Vite.</td>
+            <td>Rechazar la configuración incompleta con error explícito.</td>
+            <td><code>Missing Supabase configuration</code>; no se inicializó el cliente.</td>
+            <td><span class="status">APROBADO</span></td>
+          </tr>
+          <tr>
+            <td>URL y publishable key ficticias en variables del proceso.</td>
+            <td>Crear el cliente sin enviar solicitudes de red.</td>
+            <td>Cliente inicializado; la prueba verificó sus métodos. No se conectó a Cloud.</td>
+            <td><span class="status">APROBADO</span></td>
+          </tr>
+          <tr>
+            <td>Protección de <code>.env.local</code> y disponibilidad de la plantilla.</td>
+            <td>Ignorar el archivo real; mantener versionable <code>.env.example</code>.</td>
+            <td><code>git check-ignore -v</code> confirmó la regla para <code>.env.local</code>; la plantilla no está ignorada.</td>
+            <td><span class="status">APROBADO</span></td>
+          </tr>
+          <tr>
+            <td><code>npm run build</code>.</td>
+            <td>Conservar el build de la aplicación.</td>
+            <td>Build Vite completado correctamente; 29 módulos transformados.</td>
+            <td><span class="status">APROBADO</span></td>
+          </tr>
+          <tr>
+            <td><code>supabase projects list</code>.</td>
+            <td>Requiere sesión válida para consultar proyectos.</td>
+            <td><code>AccessTokenRequiredError</code>; no hay sesión de CLI.</td>
+            <td><span class="status pending">PENDIENTE</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>Reproducibilidad:</strong> la inicialización de prueba usó <code>https://test-project.supabase.co</code> y <code>sb_publishable_test_placeholder</code> como variables temporales de proceso; no se escribieron en archivos y no se enviaron solicitudes. CLI Supabase verificada: <strong>3.1.0</strong>.</div>
+
+      <div class="section-title"><span class="num">05</span><h2>Archivos relacionados</h2></div>
+      <ul class="filelist">
+        <li><code>src/lib/supabase.js</code> — cliente y guardia.</li>
+        <li><code>.gitignore</code> — exclusión de archivos de entorno.</li>
+        <li><code>.env.example</code> — plantilla pública.</li>
+        <li><code>package.json</code> — CLI y SDK Supabase.</li>
+        <li><code>supabase/config.toml</code> — configuración inicial local.</li>
+        <li><code>SUPABASE_SETUP.md</code> — pasos pendientes y comandos.</li>
+      </ul>
+
+      <footer class="footer">
+        <span>Pruebas locales · los valores de prueba no son credenciales</span>
+        <span><strong>Sin acceso a Supabase Cloud</strong></span>
+        <span class="page-marker">2</span>
+      </footer>
+    </article>
+
+    <article class="page">
+      <header class="topline">
+        <div class="brand">
+          <img src="../src/assets/powsi.png" alt="POWSI">
+          <span>Resultado y siguiente validación</span>
+        </div>
+        <span class="doc-tag">Decisión documentada</span>
+      </header>
+
+      <div class="section-title"><span class="num">06</span><h2>Resultado y límites</h2></div>
+      <div class="grid-2">
+        <section class="card mint">
+          <span class="test-label">Resultado alcanzado</span>
+          <h3>Configuración lista para comenzar</h3>
+          <p>El SDK está centralizado y el proyecto compila. La ausencia de configuración se detecta antes de usar el cliente y los archivos de entorno locales no se incorporan a Git.</p>
+        </section>
+        <section class="card pink">
+          <span class="test-label" style="color:#831e42">Límite explícito</span>
+          <h3>Aún no es integración Cloud</h3>
+          <p>La CLI no tiene sesión, no se eligió ni vinculó proyecto y no existe <code>.env.local</code> con valores reales. No se crearon tablas, políticas RLS ni cuentas de usuario.</p>
+        </section>
+      </div>
+      <section class="card yellow" style="margin-top:3mm">
+        <h3>Qué protege y qué no protege esta decisión</h3>
+        <p><strong>Sí:</strong> evita inicialización con variables ausentes y reduce la posibilidad de versionar archivos de entorno locales. <strong>No:</strong> valida permisos sobre perfiles/notas, evita que una publishable key sea visible (es pública por diseño), ni demuestra autorización de dueño o veterinario. Las reglas de RLS serán indispensables cuando existan tablas.</p>
+      </section>
+
+      <div class="section-title"><span class="num">07</span><h2>Próximos pasos seguros</h2></div>
+      <ol class="steps">
+        <li>Autenticar la CLI localmente con <code>npx supabase login</code>; no compartir el token.</li>
+        <li>Elegir el proyecto Cloud correcto y vincularlo con <code>npx supabase link --project-ref</code>.</li>
+        <li>Guardar URL y publishable key solo en <code>.env.local</code>.</li>
+        <li>Diseñar tablas y RLS antes de guardar perfiles o notas reales.</li>
+        <li>Aplicar autorización por dueño y veterinario asignado en cada lectura y escritura.</li>
+      </ol>
+      <p style="margin-top:2mm">La propuesta de datos separa notas del perfil y asocia cada nota a una mascota. Antes de crear las políticas hay que decidir si el veterinario asignado solo consulta o también edita, quién puede borrar y cómo se revoca el acceso al cambiar la asignación.</p>
+
+      <div class="section-title"><span class="num">08</span><h2>Caso límite propuesto</h2></div>
+      <section class="card model">
+        <h3>Revocación del veterinario con una sesión previa abierta</h3>
+        <p>Si un veterinario estaba asignado a una mascota, consulta una nota y luego el dueño o una cuenta autorizada retira esa asignación, ¿puede el veterinario seguir leyendo o modificando la nota usando una página abierta, una petición repetida o un identificador de perfil conocido?</p>
+      </section>
+      <section class="card" style="margin-top:3mm">
+        <h3>Respuesta esperada</h3>
+        <p>El servidor debe volver a comprobar la identidad, asignación vigente y permiso concreto en <strong>cada</strong> solicitud. Tras la revocación, lectura y edición deben denegarse incluso si el cliente conserva datos en memoria; invalidar o evitar cachés sensibles y registrar el cambio. La prueba debe verificar tanto el rechazo como la ausencia de contenido de la nota en la respuesta.</p>
+      </section>
+
+      <p class="quote"><strong>Conclusión:</strong> POWSI cuenta con una mejora verificable de protección de configuración y manejo de error. El siguiente hito de seguridad no es ocultar controles en React: es vincular el dueño al perfil y hacer cumplir en el servidor las políticas de acceso a notas, con RLS probada para ambos roles.</p>
+
+      <footer class="footer">
+        <span>POWSI · Perfiles locales hoy; autorización remota pendiente</span>
+        <span><strong>Conclusión técnica</strong> · 11 nov 2026</span>
+        <span class="page-marker">3</span>
+      </footer>
+    </article>
+  </main>
+</body>
+</html>
