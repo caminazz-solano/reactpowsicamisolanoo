@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/validate-supabase-key.mjs",
     "build": "vite build",
+    "test:supabase-key": "node --test scripts/validate-supabase-key.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

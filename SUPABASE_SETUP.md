@@ -19,7 +19,7 @@
 | SDK | Instalado en `package.json`. |
 | Cliente central | Creado en `src/lib/supabase.js`; requiere las variables de entorno antes de importarse. |
 | Variables de ejemplo | Definidas en `.env.example`; se excluyen los archivos `.env*` reales del control de versiones, con excepción de `.env.example`. |
-| Validación de compilación | `npm run build` completado; también se compiló el módulo cliente con valores ficticios no persistidos. |
+| Validación de compilación | `prebuild` rechaza cualquier clave configurada que no empiece con `sb_publishable_`; el formato privado `sb_secret_` detiene el build. Probados ambos casos con valores ficticios. |
 | Autenticación CLI | Pendiente. `npx supabase projects list` devolvió `AccessTokenRequiredError`. No se solicitó ni se guardó ningún token. |
 | Proyecto Cloud vinculado | Pendiente de autenticación y selección del proyecto. No se enlazó ni modificó ningún proyecto remoto. |
 | URL y publishable key reales | Pendientes de seleccionar el proyecto Cloud. No se incluyen credenciales en el repositorio. |
@@ -35,6 +35,8 @@ VITE_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
 
 La publishable key está destinada al cliente web y no sustituye autorización. No poner claves `service_role`, claves secretas ni tokens de acceso en variables `VITE_*`, porque Vite las expone al bundle del navegador. La configuración actual no usa ninguna tabla ni ejecuta operaciones contra la base de datos.
 
+Antes de cada `npm run build`, el script `scripts/validate-supabase-key.mjs` lee la configuración de producción y valida el prefijo de la clave si está definida. La variable puede omitirse mientras todavía no se configura Supabase; una clave configurada debe comenzar con `sb_publishable_`. Esta validación de formato es una barrera contra errores de configuración, no un sustituto de RLS ni una detección universal de todos los secretos posibles.
+
 ## Archivos creados o modificados
 
 - `package.json` y `package-lock.json`: CLI como dependencia de desarrollo y SDK como dependencia de ejecución.
@@ -42,6 +44,8 @@ La publishable key está destinada al cliente web y no sustituye autorización. 
 - `.gitignore`: exclusión de `.env` y `.env.*`; `.env.example` permanece versionable.
 - `.env.example`: nombres de variables requeridas con valores ilustrativos.
 - `src/lib/supabase.js`: creación singleton del cliente con validación explícita de configuración faltante.
+- `scripts/validate-supabase-key.mjs` y `scripts/validate-supabase-key.test.mjs`: validación pre-build y pruebas para formatos ficticios.
+- `package.json`: hook `prebuild` y comando `npm run test:supabase-key`.
 - `SUPABASE_SETUP.md`: esta guía.
 
 ## Completar autenticación y vinculación
@@ -64,6 +68,7 @@ npx supabase --version
 npx supabase login
 npx supabase projects list
 npx supabase link --project-ref <project-ref>
+npm run test:supabase-key
 npm run dev
 npm run build
 ```
@@ -76,3 +81,5 @@ npm run build
 - No crear tablas, migraciones, autenticación de usuarios ni lógica de negocio sin requisitos y autorización explícitos.
 
 La comprobación aislada del cliente usó `https://example.supabase.co` y una clave de prueba ficticia como variables de proceso; no se guardaron en archivos, no se conectó con Supabase Cloud y los artefactos temporales se eliminaron.
+
+La validación de formato se puede ejecutar por separado con `npm run test:supabase-key`. Resultado verificado: 2 pruebas pasan; el build completo acepta `sb_publishable_FAKE_TEST_KEY_123` y se detiene durante `prebuild` con `sb_secret_FAKE_TEST_KEY_123`, sin mostrar el valor ficticio ni iniciar la compilación Vite. También se confirmó el build normal sin credenciales. Son datos sintéticos, no claves reales, y no se realizaron solicitudes a Supabase Cloud.
