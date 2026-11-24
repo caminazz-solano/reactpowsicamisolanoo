@@ -3,6 +3,8 @@
 **Sistema:** POWSI Veterinaria
 **Fecha de análisis:** 11 de noviembre de 2026
 
+> **Actualización (24 de noviembre de 2026):** este análisis conserva el estado inicial como línea base. La aplicación ahora persiste perfiles/notas en Supabase y, por solicitud posterior, guarda solicitudes de cita en `appointment_requests` con lectura/creación únicamente para el dueño autenticado. La cita sigue siendo una solicitud, no una reserva confirmada. La matriz inicial de este documento no sustituye las políticas aplicadas. Consulta el estado y las pruebas pendientes en [docs/supabase-integration/ANALISIS.md](./supabase-integration/ANALISIS.md).
+
 ## 1. Descripción breve del sistema
 
 POWSI es una aplicación de una sola página para presentar servicios de una veterinaria, consultar información de contacto, gestionar un perfil local de mascota y preparar una cita. Los formularios se procesan en React y los perfiles y la última cita se guardan en `localStorage` del navegador. La aplicación no tiene conexión con una base de datos ni un backend, y no implementa autenticación ni roles.

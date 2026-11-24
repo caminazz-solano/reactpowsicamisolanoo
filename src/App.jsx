@@ -6,6 +6,7 @@ import ContactPage from './pages/ContactPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import PetDashboardPage from './pages/PetDashboardPage.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 import {
   consumePendingScroll,
   currentAppPath,
@@ -24,16 +25,63 @@ const pages = {
 
 const pageTitles = {
   '/': 'POWSI | Veterinaria retro',
+  '/cuenta': 'POWSI | Mi mascota',
   '/mi-mascota': 'POWSI | Mi mascota',
   '/agendar': 'POWSI | Agendar cita',
   '/nosotros': 'POWSI | Nosotros',
   '/contacto': 'POWSI | Contacto',
 }
 
+function AccessStatusPage({ title, message, error, loading = false }) {
+  return (
+    <section className="section cream page-main">
+      <h1>{title}</h1>
+      <p role={loading ? 'status' : undefined}>{message}</p>
+      {error && <p role="alert">{error}</p>}
+      {!loading && <Button href="/" variant="primary">Volver al inicio</Button>}
+    </section>
+  )
+}
+
 function App() {
   const location = useSyncExternalStore(subscribeToLocation, getLocationSnapshot, getLocationSnapshot)
   const path = currentAppPath()
-  const Page = pages[path] ?? NotFoundPage
+  const auth = useAuth()
+  const Page = path === '/cuenta'
+    ? PetDashboardPage
+    : pages[path] ?? NotFoundPage
+  let pageStatus = null
+
+  if (path === '/mi-mascota' || path === '/cuenta' || path === '/agendar') {
+    if (!auth.configured) {
+      pageStatus = {
+        title: 'Tu espacio POWSI',
+        message: 'No se pudo conectar con el servicio de perfiles.',
+      }
+    } else if (auth.loading || (auth.user && !auth.account && !auth.error)) {
+      pageStatus = {
+        title: 'Tu espacio POWSI',
+        message: 'Preparando tu espacio...',
+        loading: true,
+      }
+    } else if (!auth.user || auth.error) {
+      pageStatus = {
+        title: 'Tu espacio POWSI',
+        message: 'No se pudo preparar tu espacio. Intenta recargar la página.',
+        error: auth.error,
+      }
+    } else if (path === '/agendar' && !auth.account?.ownerAccount) {
+      pageStatus = {
+        title: 'Agendar cita',
+        message: 'Esta sección está disponible para propietarios.',
+      }
+    } else if (!auth.account?.ownerAccount && !auth.account?.veterinarianAccount) {
+      pageStatus = {
+        title: 'Tu espacio POWSI',
+        message: 'No se pudo preparar el perfil de este espacio.',
+      }
+    }
+  }
   const mainRef = useRef(null)
   const previousPathRef = useRef(path)
   const [routeAnnouncement, setRouteAnnouncement] = useState('')
@@ -73,7 +121,9 @@ function App() {
   return (
     <SiteLayout mainRef={mainRef} routeAnnouncement={routeAnnouncement}>
       <RouteErrorBoundary key={`${path}${window.location.search}`}>
-        <Page key={`${path}${window.location.search}`} />
+        {pageStatus
+          ? <AccessStatusPage {...pageStatus} />
+          : <Page key={`${path}${window.location.search}`} />}
       </RouteErrorBoundary>
     </SiteLayout>
   )

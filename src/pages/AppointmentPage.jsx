@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Icon, Section, SectionHeading } from '../components/SiteLayout.jsx'
 import { services, whatsappUrl } from '../data/powsi.js'
+import { useAuth } from '../context/AuthContext.jsx'
+import { getSupabaseClient } from '../lib/supabase.js'
 import usePetProfiles from '../hooks/usePetProfiles.js'
 
 const appointmentSteps = [
@@ -33,7 +35,8 @@ function AppointmentSteps() {
 }
 
 export default function AppointmentPage() {
-  const { pets, activeIndex, setActiveIndex } = usePetProfiles()
+  const { user } = useAuth()
+  const { pets, activeIndex, setActiveIndex, loading, error } = usePetProfiles()
   const requestedPet = new URLSearchParams(window.location.search).get('paciente') === 'nuevo'
   const requestedService = new URLSearchParams(window.location.search).get('servicio')
   const initialService = serviceNames.includes(requestedService) ? requestedService : serviceNames[0]
@@ -45,9 +48,23 @@ export default function AppointmentPage() {
   const [notes, setNotes] = useState('')
   const [selectedTime, setSelectedTime] = useState('10:30')
   const [confirmation, setConfirmation] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
+  const [cacheWarning, setCacheWarning] = useState('')
   const newPetInputRef = useRef(null)
   const confirmationRef = useRef(null)
   const isNewPatient = selectedPet === 'new'
+
+  useEffect(() => {
+    if (loading) return
+    if (pets.length === 0) {
+      if (selectedPet !== 'new') setSelectedPet('new')
+      return
+    }
+    if (selectedPet !== 'new' && !pets[Number(selectedPet)]) {
+      setSelectedPet(String(activeIndex))
+    }
+  }, [activeIndex, loading, pets, selectedPet])
 
   useEffect(() => {
     if (isNewPatient) newPetInputRef.current?.focus()
@@ -81,26 +98,74 @@ export default function AppointmentPage() {
     setConfirmation(null)
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    const appointment = {
-      pet: chosenPet,
-      service,
-      date,
-      time: selectedTime,
-      notes: notes.trim(),
+    setConfirmation(null)
+    setSaveError('')
+    setCacheWarning('')
+    if (!user?.id) {
+      setSaveError('No se encontró una sesión para guardar la cita.')
+      return
     }
-    setConfirmation(appointment)
+    if (loading) {
+      setSaveError('Espera a que termine de cargar la lista de mascotas.')
+      return
+    }
+
+    const selectedProfile = isNewPatient ? null : pets[Number(selectedPet)]
+    if (!isNewPatient && !selectedProfile) {
+      setSaveError('Selecciona una mascota válida antes de continuar.')
+      return
+    }
+    const petName = isNewPatient ? newPetName.trim() : selectedProfile.name || chosenPet
+    if (!petName) {
+      setSaveError('Escribe el nombre de la mascota.')
+      return
+    }
+
+    setSaving(true)
     try {
-      localStorage.setItem('woofyNextAppointment', JSON.stringify(appointment))
-    } catch {
-      // La confirmación y el enlace siguen disponibles aunque el almacenamiento esté bloqueado.
+      const { data, error: insertError } = await getSupabaseClient()
+        .from('appointment_requests')
+        .insert({
+          owner_id: user.id,
+          pet_profile_id: selectedProfile?.id ?? null,
+          pet_name: petName,
+          service,
+          appointment_date: date,
+          appointment_time: selectedTime,
+          contact_phone: phone.trim() || null,
+          notes: notes.trim(),
+        })
+        .select('pet_name, service, appointment_date, appointment_time, notes')
+        .single()
+      if (insertError) throw insertError
+
+      const appointment = {
+        pet: data.pet_name,
+        service: data.service,
+        date: data.appointment_date,
+        time: String(data.appointment_time).slice(0, 5),
+        notes: data.notes,
+      }
+      setConfirmation(appointment)
+      try {
+        localStorage.setItem(`woofyNextAppointment:${user.id}`, JSON.stringify(appointment))
+      } catch (cacheError) {
+        setCacheWarning(`La cita quedó guardada en Supabase, pero no se pudo actualizar el recordatorio local: ${cacheError.message}`)
+      }
+    } catch (error) {
+      setSaveError(`No se pudo guardar la cita en Supabase: ${error.message}`)
+    } finally {
+      setSaving(false)
     }
   }
 
   return (
     <Section id="agendar" className="cream page-main" decorationIndex={0}>
       <SectionHeading title="Agendar cita" />
+      {loading && <p role="status">Cargando perfiles...</p>}
+      {error && <p role="alert">{error}</p>}
       <div className="appt">
         <AppointmentSteps />
         <form className="card form" onSubmit={handleSubmit}>
@@ -161,10 +226,13 @@ export default function AppointmentPage() {
               </button>
             ))}
           </div>
-          <Button variant="primary" type="submit">Confirmar cita</Button>
+          <Button variant="primary" type="submit" disabled={saving || loading}>Confirmar cita</Button>
+          {saveError && <p role="alert">{saveError}</p>}
+          {cacheWarning && <p role="status">{cacheWarning}</p>}
           {confirmation && (
             <div className="done show" ref={confirmationRef} role="status" aria-live="polite">
-              <h3>Cita agendada!</h3>
+              <h3>Solicitud guardada</h3>
+              <p>La solicitud quedó guardada en Supabase. La clínica debe confirmar la disponibilidad.</p>
               <p><b>Mascota:</b> {confirmation.pet} - <b>Servicio:</b> {confirmation.service}</p>
               <p><b>Fecha:</b> {confirmation.date} - <b>Hora:</b> {confirmation.time}</p>
               {confirmation.notes && <p><b>Notas:</b> {confirmation.notes}</p>}

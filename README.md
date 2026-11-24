@@ -6,9 +6,7 @@ La navegación es una SPA: los enlaces internos usan History API y actualizan la
 
 Al cambiar de vista con navegación interna, el foco se mueve al encabezado principal y una región `aria-live` anuncia el título para tecnologías de asistencia.
 
-Rutas disponibles: `/`, `/mi-mascota`, `/agendar`, `/nosotros` y `/contacto`. Las rutas desconocidas muestran una página 404. Los formularios de agenda y perfil se procesan en React y no envían el documento.
-
-Los perfiles de mascotas y las citas se guardan en `localStorage` del navegador; no hay un backend ni sincronización entre dispositivos. Después de agendar, se puede continuar la confirmación por WhatsApp.
+Rutas disponibles: `/`, `/cuenta`, `/mi-mascota`, `/agendar`, `/nosotros` y `/contacto`. Las rutas desconocidas muestran una página 404. `/cuenta` abre directamente el espacio de mascotas. No hay pantallas ni campos de correo: Supabase crea una sesión anónima en segundo plano y RLS mantiene los datos separados por sesión. Ese espacio se conserva en este navegador; no se puede recuperar desde otro dispositivo ni después de borrar sus datos. Las solicitudes de cita todavía se preparan localmente y se confirman por WhatsApp; el historial y las vacunas son ilustrativos.
 
 ## Publicacion
 
@@ -45,6 +43,15 @@ Vite muestra la URL local, que incluye la base `/reactpowsicamisolanoo/` configu
 npm run build
 npm run preview
 ```
+
+## Supabase
+
+1. Copia `.env.example` a `.env.local`.
+2. Configura `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` con los datos del proyecto. Usa solo la clave publicable en el cliente; nunca pongas una clave secreta ni `service_role` en una variable `VITE_*`.
+3. Ejecuta `npm run dev`. Para compilar con la configuración local usa `npm run build`; para verificar el formato de la clave, `npm run test:supabase-key`.
+4. Revisa `SUPABASE_SETUP.md` y `docs/supabase-integration/CHECKLIST.md` para el estado de migraciones y las pruebas pendientes.
+
+La configuración local `.env.local` está excluida de Git. La publicación en GitHub Pages también necesita variables de build configuradas en el flujo de GitHub; no se deben guardar credenciales en el repositorio.
 
 ## Archivos incluidos en GitHub
 
