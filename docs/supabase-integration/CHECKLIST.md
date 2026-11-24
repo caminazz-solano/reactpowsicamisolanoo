@@ -1,7 +1,7 @@
 # Checklist de integración Supabase — POWSI
 
 **Fuente:** `docs/ER-CRUD.pdf`
-**Estado:** esquema/RLS desplegados; CRUD de perfiles/notas probado; la pantalla de correo fue retirada y el dashboard abre con Auth anónimo en segundo plano. Falta comprobar el primer inicio anónimo desde el navegador.
+**Estado:** esquema/RLS desplegados; CRUD de perfiles/notas probado; cambios publicados en GitHub Pages. Falta comprobar el inicio anónimo y el envío del formulario desde el navegador.
 
 ## Etapas
 
@@ -60,13 +60,13 @@ Los estados de esta tabla describen el código y la verificación remota; no con
 - `npm run build`: correcto con `.env.local`.
 - `npm run test:supabase-key`: 2 pruebas aprobadas.
 - `git diff --check`: correcto.
-- GitHub Pages: los cambios locales del workflow inyectan `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`; las variables del repositorio de destino se configuraron sin mostrar sus valores. El workflow todavía no se ha publicado ni ejecutado con estos cambios.
+- GitHub Pages: las variables `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` están configuradas en el repositorio. El primer workflow falló por un typo en el nombre del archivo; se corrigió en `21f0781`, y el workflow terminó correctamente. La URL pública respondió HTTP 200 y contiene el bundle Vite.
 - El código ya no incluye el formulario ni referencias de correo; `/cuenta` apunta directamente al dashboard. Falta comprobar el inicio anónimo desde navegador.
 
 ## Bloqueos y siguiente acción
 
 1. Enviar una solicitud desde el formulario usando la sesión de dueño y verificar que aparece en `appointment_requests`; después recargar la página.
-2. Publicar los cambios locales para que GitHub Pages incorpore el flujo de guardado y las variables configuradas.
+2. Verificar en navegador que la sesión anónima se crea/restaura tras recargar; la cuenta queda guardada solo en ese navegador.
 3. Las solicitudes no reservan horario ni se muestran al veterinario; ampliar esos permisos requiere una decisión de producto.
 4. Revisar por separado el warning sobre `public.rls_auto_enable()` antes de alterar su ACL.
 

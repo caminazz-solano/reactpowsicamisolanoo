@@ -79,6 +79,7 @@ No hay semillas. `supabase/config.toml` conserva ajustes locales de desarrollo; 
 - `supabase db advisors --remote --type security --level warn`: emitió avisos para `public.rls_auto_enable()`. El catálogo confirma que es una función `SECURITY DEFINER` enlazada al event trigger `ensure_rls`; no pertenece a la migración de la aplicación y no se modificaron sus permisos.
 - `npm run build`: correcto con la configuración local.
 - `npm run test:supabase-key`: 2 pruebas aprobadas.
+- GitHub Pages: commits `81897aa` y `21f0781` publicados en el repositorio existente; el workflow corregido terminó correctamente y la URL pública respondió HTTP 200 con el bundle de la aplicación.
 - La inserción desde la interfaz de citas compila y la API Auth/PostgREST ya probó insertar/leer con RLS. Aún no se ha enviado el formulario React desde el navegador; ese recorrido visual extremo a extremo queda pendiente.
 
 Las pruebas con clientes `supabase-js` y sesiones Auth verificaron persistencia y permisos de dueño/veterinario, incluida revocación en caliente. Falta validar en navegador la creación/restauración de una sesión anónima y la persistencia tras recargar.
@@ -89,4 +90,4 @@ Las pruebas con clientes `supabase-js` y sesiones Auth verificaron persistencia 
 2. La solicitud de cita ya se persiste en `appointment_requests` con permisos de dueño. La petición no reserva el horario ni confirma la cita; un historial, acceso de personal, edición y cancelación necesitarían requisitos y políticas adicionales.
 3. Revisar por separado los avisos del advisor sobre `public.rls_auto_enable()` antes de alterar su ACL.
 
-**Siguiente acción para retomar:** probar el envío de una cita desde la aplicación con una sesión de dueño y verificar su fila; luego publicar los cambios del workflow de GitHub Pages.
+**Siguiente acción para retomar:** probar en el navegador la creación/restauración de la sesión anónima y el envío de una cita desde el formulario; recargar y verificar que la fila siga en Supabase.
